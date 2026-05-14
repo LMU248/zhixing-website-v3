@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>知行新商学 — AI商业教育 · 从流量到留量</title>
+<style>
+  :root {
+    --purple-lightest: #EDE9FE;
+    --purple-light: #C4B5FD;
+    --purple-bright: #8B5CF6;
+    --purple-mid: #4C2BB4;
+    --purple-deep: #1D206A;
+    --text-body: #1F2937;
+    --text-secondary: #4B5563;
+    --text-tertiary: #6B7280;
+    --white: #FFFFFF;
+    --white-soft: #FAFAFE;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-lg: 24px;
+    --shadow-sm: inset 0 0 0 .5px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03);
+    --shadow-md: inset 0 0 0 .5px rgba(0,0,0,.03), 0 4px 14px rgba(29,32,106,.04);
+    --shadow-lg: inset 0 0 0 .5px rgba(0,0,0,.04), 0 8px 28px rgba(29,32,106,.06);
+    --font-title: "Noto Serif SC", "Source Han Serif SC", "STSong", "Songti SC", "宋体", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body); background: var(--white);
+    color: var(--text-body); line-height: 1.7;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+
+  /* ── Nav ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(255,255,255,.72);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: .5px solid rgba(29,32,106,.04);
+    padding: 0 20px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo {
+    font-family: var(--font-title); font-size: 18px; font-weight: 700;
+    letter-spacing: 0; color: var(--purple-deep);
+  }
+  .nav-cta {
+    position: fixed; top: 10px; right: 16px; z-index: 201;
+    background: var(--purple-deep); color: #fff; border: none;
+    font-size: 12px; font-weight: 600; padding: 7px 16px;
+    border-radius: 18px; cursor: pointer; letter-spacing: .3px;
+    transition: opacity .15s;
+  }
+  .nav-cta:hover { opacity: .85; }
+
+  /* ── Drawer ── */
+  .drawer-trigger {
+    position: fixed; left: 0; top: 50%; transform: translateY(-50%);
+    z-index: 300; width: 28px; height: 72px;
+    background: rgba(29,32,106,.04); border: .5px solid rgba(29,32,106,.05);
+    border-left: none; border-radius: 0 14px 14px 0;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .2s;
+    font-size: 14px; color: var(--purple-mid);
+  }
+  .drawer-trigger:hover { background: rgba(29,32,106,.10); }
+  .drawer-overlay {
+    position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,.3);
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 500;
+    width: 260px; max-width: 80vw;
+    background: #fff; box-shadow: 4px 0 32px rgba(0,0,0,.12);
+    transform: translateX(-100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column; padding: 28px 24px;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close {
+    align-self: flex-end; background: none; border: none;
+    font-size: 22px; cursor: pointer; color: var(--text-tertiary);
+    padding: 4px 8px; margin-bottom: 20px;
+  }
+  .drawer-links { display: flex; flex-direction: column; gap: 4px; }
+  .drawer-links a {
+    display: block; padding: 14px 16px; font-size: 16px; font-weight: 600;
+    color: var(--text-body); text-decoration: none; border-radius: var(--radius-sm);
+    letter-spacing: .5px; transition: background .15s, color .15s;
+  }
+  .drawer-links a:hover { background: var(--purple-lightest); color: var(--purple-mid); }
+
+  /* ── Section ── */
+  .sec { padding: 100px 20px; }
+  .sec-inner { max-width: 1120px; margin: 0 auto; }
+  .sec-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    color: var(--purple-bright); margin-bottom: 12px;
+  }
+  .sec-title {
+    font-family: var(--font-title); font-size: 28px; font-weight: 700;
+    letter-spacing: 0; color: var(--purple-deep);
+    margin-bottom: 14px; line-height: 1.2;
+  }
+  @media (min-width: 640px) { .sec-title { font-size: 38px; } }
+  .sec-desc {
+    font-size: 15px; color: var(--text-secondary); margin-bottom: 52px;
+    max-width: 560px; line-height: 1.75;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 120px 20px 80px; text-align: center;
+    background: linear-gradient(175deg, #F4F1FF 0%, #EDE9FE 25%, #F8F7FC 55%, var(--white) 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -120px; right: -100px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,.04) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero::after { display: none; }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    color: var(--purple-mid); background: rgba(139,92,246,.06);
+    padding: 5px 16px; border-radius: 14px; margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-family: var(--font-title); font-size: 36px; font-weight: 700;
+    letter-spacing: 0; line-height: 1.18; color: var(--purple-deep);
+    margin-bottom: 24px;
+  }
+  @media (min-width: 640px) { .hero h1 { font-size: 54px; } }
+  .hero h1 em { font-style: normal; color: var(--purple-bright); }
+  .hero-sub {
+    font-size: 16px; color: var(--text-secondary); margin-bottom: 40px;
+    max-width: 560px; margin-left: auto; margin-right: auto;
+    letter-spacing: 0; line-height: 1.8;
+  }
+  .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--purple-deep); color: #fff;
+    padding: 14px 34px; border-radius: 26px; font-size: 15px;
+    font-weight: 600; text-decoration: none; letter-spacing: 0;
+    box-shadow: 0 4px 16px rgba(29,32,106,.18);
+    transition: transform .2s, box-shadow .2s, opacity .2s;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(29,32,106,.28); }
+  .btn-primary:active { transform: scale(.97); }
+  .btn-outline {
+    display: inline-block; background: #fff; color: var(--purple-deep);
+    padding: 14px 34px; border-radius: 26px; font-size: 15px;
+    font-weight: 600; text-decoration: none; letter-spacing: 0;
+    border: 1.5px solid rgba(29,32,106,.12);
+    transition: transform .2s, border-color .2s;
+  }
+  .btn-outline:hover { border-color: var(--purple-mid); transform: translateY(-2px); }
+
+  /* ── Trust Bar ── */
+  .trust { background: #fff; padding: 36px 20px; }
+  .trust-row { display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .trust-item .num {
+    font-family: var(--font-title); font-size: 44px; font-weight: 700;
+    letter-spacing: 0; color: var(--purple-mid); line-height: 1.1;
+  }
+  @media (min-width: 640px) { .trust-item .num { font-size: 56px; } }
+  .trust-item .lbl {
+    font-size: 13px; color: var(--text-tertiary); margin-top: 8px;
+    font-weight: 400; letter-spacing: 0;
+  }
+
+  /* ══════════════════════════════════════ */
+  /* ── Community: Horizontal Staircase ── */
+  /* ══════════════════════════════════════ */
+  .community { background: linear-gradient(180deg, #fff 0%, #F9F7FF 30%, #F5F1FE 60%, #fff 100%); }
+
+  /* desktop: horizontal stair */
+  .stair-horizontal {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 0; max-width: 800px; margin: 0 auto 12px;
+    position: relative; padding: 0 10px 40px;
+  }
+  @media (max-width: 700px) { .stair-horizontal { display: none; } }
+
+  .stair-col { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+
+  /* Cards at different heights — the stair effect */
+  .stair-col:nth-child(1) .stair-card-h { margin-bottom: 0; }
+  .stair-col:nth-child(2) .stair-card-h { margin-bottom: 28px; }
+  .stair-col:nth-child(3) .stair-card-h { margin-bottom: 56px; }
+
+  .stair-card-h {
+    background: #fff; border-radius: var(--radius); padding: 22px 16px;
+    box-shadow: var(--shadow-sm); border: .5px solid rgba(29,32,106,.04);
+    text-align: center; width: 100%; position: relative; z-index: 1;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .stair-col:nth-child(2) .stair-card-h { background: #F8F5FF; border-color: rgba(139,92,246,.12); }
+  .stair-col:nth-child(3) .stair-card-h { background: #F0EAFF; border-color: rgba(139,92,246,.20); }
+  .stair-card-h:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .stair-card-h .st-icon { font-size: 24px; margin-bottom: 6px; }
+  .stair-card-h .st-name {
+    font-family: var(--font-title); font-size: 15px; font-weight: 700;
+    color: var(--purple-deep); margin-bottom: 4px; letter-spacing: 0;
+  }
+  .stair-card-h .st-price {
+    font-size: 16px; font-weight: 700; color: var(--purple-mid); margin-bottom: 6px; letter-spacing: 0;
+  }
+  .stair-card-h .st-desc {
+    font-size: 11px; color: var(--text-tertiary); line-height: 1.5;
+  }
+
+  /* Connector boxes between stairs */
+  .stair-connector {
+    text-align: center; padding: 8px 4px; position: relative; z-index: 0;
+  }
+  .stair-connector .conn-text {
+    font-size: 10px; font-weight: 700; color: var(--purple-mid);
+    background: #FBFAFF; border: 1px dashed rgba(139,92,246,.2);
+    border-radius: var(--radius-sm); padding: 8px 10px; display: inline-block;
+    letter-spacing: .3px; white-space: nowrap;
+  }
+  /* Upward arrow between steps */
+  .stair-connector .conn-arrow {
+    display: block; font-size: 18px; color: var(--purple-light); margin-top: 2px;
+  }
+
+  /* mobile: vertical fallback */
+  .stair-vertical {
+    display: none; flex-direction: column; gap: 0;
+    max-width: 500px; margin: 0 auto 20px;
+  }
+  @media (max-width: 700px) { .stair-vertical { display: flex; } }
+
+  .stair-v-card {
+    background: #fff; border-radius: var(--radius); padding: 20px 18px;
+    box-shadow: var(--shadow-sm); border: .5px solid rgba(29,32,106,.04);
+    transition: transform .2s;
+  }
+  .stair-v-card:nth-child(2) { background: #F8F5FF; }
+  .stair-v-card:nth-child(3) { background: #F0EAFF; }
+  .stair-v-card .st-name {
+    font-family: var(--font-title); font-size: 16px; font-weight: 800; color: var(--purple-deep);
+  }
+  .stair-v-card .st-price { font-size: 14px; font-weight: 700; color: var(--purple-mid); margin: 4px 0 6px; }
+  .stair-v-card .st-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+  .stair-v-step {
+    padding: 10px 20px; position: relative;
+  }
+  .stair-v-step::before {
+    content: ''; position: absolute; left: 26px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(180deg, var(--purple-light), var(--purple-mid));
+    border-radius: 1px;
+  }
+  .stair-v-step .vstep-text {
+    margin-left: 46px; background: #FBFAFF; border: 1px dashed rgba(139,92,246,.2);
+    border-radius: var(--radius-sm); padding: 8px 14px;
+    font-size: 12px; color: var(--text-secondary); font-weight: 600;
+    position: relative;
+  }
+  .stair-v-step .vstep-text::before {
+    content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+    width: 8px; height: 8px; border-radius: 50%; background: var(--purple-bright);
+  }
+
+  /* ── Express Lane ── */
+  .express-lane {
+    max-width: 800px; margin: 0 auto 20px;
+    background: #FFFBEB; border: 1px dashed rgba(180,83,9,.2);
+    border-radius: var(--radius); padding: 20px 24px;
+  }
+  .express-lane .ex-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: #B45309; margin-bottom: 14px; text-align: center;
+  }
+  .express-row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .express-item {
+    flex: 1; min-width: 100px; text-align: center; padding: 12px 8px;
+    background: #fff; border-radius: var(--radius-sm);
+    border: 1px solid rgba(180,83,9,.12);
+  }
+  .express-item .ex-from { font-size: 12px; color: var(--text-tertiary); margin-bottom: 4px; }
+  .express-item .ex-price { font-size: 20px; font-weight: 800; color: #B45309; letter-spacing: -.5px; }
+  .express-item .ex-price span { font-size: 12px; font-weight: 500; }
+  .express-arrow { font-size: 18px; color: #B45309; font-weight: 300; flex-shrink: 0; }
+
+  /* ── Higher Tiers ── */
+  .high-tiers {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    max-width: 700px; margin: 0 auto;
+  }
+  @media (max-width: 560px) { .high-tiers { grid-template-columns: 1fr; } }
+  .ht-card {
+    background: #fff; border-radius: var(--radius); padding: 24px 18px;
+    text-align: center; box-shadow: var(--shadow-sm);
+    border: .5px solid rgba(29,32,106,.04);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .ht-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .ht-card:nth-child(2) { background: #F5F1FE; border-color: rgba(139,92,246,.15); }
+  .ht-card:nth-child(3) { background: var(--purple-mid); color: #fff; border-color: transparent; }
+  .ht-card:nth-child(3) .ht-who { color: rgba(255,255,255,.65); }
+  .ht-card:nth-child(3) .ht-price { color: #DDD0FF; }
+  .ht-card:nth-child(3) .ht-tag { background: rgba(255,255,255,.14); color: #fff; }
+  .ht-icon { font-size: 28px; margin-bottom: 10px; }
+  .ht-name { font-family: var(--font-title); font-size: 16px; font-weight: 700; color: var(--purple-deep); margin-bottom: 4px; letter-spacing: 0; }
+  .ht-card:nth-child(3) .ht-name { color: #fff; }
+  .ht-price { font-size: 18px; font-weight: 700; color: var(--purple-mid); margin-bottom: 10px; letter-spacing: 0; }
+  .ht-tag {
+    display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    color: var(--purple-mid); background: rgba(139,92,246,.08);
+    padding: 4px 12px; border-radius: 10px; margin-bottom: 8px;
+  }
+  .ht-perks { list-style: none; text-align: left; margin-bottom: 12px; }
+  .ht-perks li {
+    font-size: 12px; color: var(--text-secondary); line-height: 1.6;
+    padding: 2px 0; padding-left: 16px; position: relative;
+  }
+  .ht-card:nth-child(3) .ht-perks li { color: rgba(255,255,255,.72); }
+  .ht-perks li::before {
+    content: ''; position: absolute; left: 0; top: 9px;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--purple-bright); opacity: .5;
+  }
+  .ht-who { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+
+  /* ── Courses ── */
+  .courses { background: #fff; }
+  .path-flow { display: flex; gap: 20px; align-items: stretch; margin-bottom: 48px; }
+  @media (max-width: 768px) { .path-flow { flex-direction: column; } }
+  .path-stage {
+    flex: 1; min-width: 180px; background: #FBFAFF;
+    border-radius: var(--radius); padding: 32px 24px;
+    border: .5px solid rgba(29,32,106,.03); text-align: center;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .path-stage:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .path-stage .st-icon { font-size: 34px; margin-bottom: 12px; }
+  .path-stage .st-name {
+    font-family: var(--font-title); font-size: 14px; font-weight: 800;
+    color: var(--purple-bright); letter-spacing: 2px; margin-bottom: 10px;
+  }
+  .path-stage .st-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+  .path-arrow {
+    display: flex; align-items: center; font-size: 24px;
+    color: var(--purple-light); font-weight: 200; flex-shrink: 0;
+  }
+  @media (max-width: 768px) { .path-arrow { justify-content: center; transform: rotate(90deg); } }
+
+  .course-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 960px) { .course-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .course-grid { grid-template-columns: 1fr; } }
+  .course-card {
+    background: #fff; border-radius: var(--radius); padding: 26px 20px 22px;
+    box-shadow: var(--shadow-sm); border: .5px solid rgba(29,32,106,.03);
+    display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s;
+  }
+  .course-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .course-card .c-badge {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 8px; margin-bottom: 14px; align-self: flex-start;
+  }
+  .c-badge.live { background: #ECFDF5; color: #059669; }
+  .c-badge.beta { background: #FEF3C7; color: #B45309; }
+  .c-badge.dev { background: #F3F4F6; color: #6B7280; }
+  .course-card h4 {
+    font-family: var(--font-title); font-size: 16px; font-weight: 700;
+    color: var(--purple-deep); margin-bottom: 6px; letter-spacing: 0;
+  }
+  .course-card p { font-size: 13px; color: var(--text-tertiary); line-height: 1.6; flex: 1; }
+
+  /* 学员案例 — bottom-right of courses section */
+  .cases-entry {
+    text-align: right; margin-top: 24px;
+  }
+  .cases-entry a {
+    display: inline-block; font-size: 14px; font-weight: 700;
+    color: var(--purple-bright); text-decoration: none;
+    letter-spacing: 1px; padding: 10px 20px;
+    border: 1.5px solid rgba(139,92,246,.25);
+    border-radius: 24px; transition: background .2s, border-color .2s;
+  }
+  .cases-entry a:hover { background: var(--purple-lightest); border-color: var(--purple-bright); }
+
+  /* ── Founder ── */
+  .founder { background: linear-gradient(180deg, #fff 0%, #F7F4FF 50%, #fff 100%); }
+  .founder-block {
+    display: flex; gap: 56px; align-items: flex-start;
+    background: #fff; border-radius: var(--radius-lg); padding: 52px 48px;
+    box-shadow: var(--shadow-md); border: .5px solid rgba(29,32,106,.03);
+  }
+  @media (max-width: 700px) { .founder-block { flex-direction: column; padding: 32px 24px; gap: 28px; } }
+  .founder-av {
+    width: 130px; height: 130px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(145deg, var(--purple-light) 0%, var(--purple-mid) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-title); font-size: 48px; color: #fff; font-weight: 800;
+    box-shadow: 0 0 0 10px rgba(139,92,246,.05);
+  }
+  .founder-story .quote {
+    font-family: var(--font-title); font-size: 20px; font-weight: 700;
+    color: var(--purple-deep); line-height: 1.5; margin-bottom: 24px;
+    padding-left: 20px; border-left: 2px solid var(--purple-bright);
+    letter-spacing: 0;
+  }
+  .founder-story p { font-size: 14px; color: var(--text-secondary); line-height: 1.9; margin-bottom: 12px; }
+  .founder-story strong { color: var(--text-body); font-weight: 700; }
+  .timeline-row { display: flex; gap: 14px; margin-top: 28px; }
+  @media (max-width: 480px) { .timeline-row { flex-wrap: wrap; } }
+  .tl-dot {
+    flex: 1; min-width: 110px; text-align: center;
+    padding: 18px 14px; background: #FBFAFF; border-radius: var(--radius-sm);
+    border: .5px solid rgba(29,32,106,.03); transition: transform .2s;
+  }
+  .tl-dot:hover { transform: translateY(-2px); }
+  .tl-dot .yr { font-family: var(--font-title); font-size: 14px; font-weight: 800; color: var(--purple-bright); margin-bottom: 6px; }
+  .tl-dot .ev { font-size: 12px; color: var(--text-tertiary); line-height: 1.6; }
+
+  /* ── Enterprise ── */
+  .enterprise {
+    background: linear-gradient(165deg, #16194D 0%, var(--purple-deep) 40%, #131750 100%);
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .enterprise::before {
+    content: ''; position: absolute; top: -60px; right: -100px;
+    width: 350px; height: 350px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .enterprise .sec-inner { position: relative; z-index: 1; }
+  .enterprise .sec-label { color: rgba(255,255,255,.5); }
+  .enterprise .sec-title { color: #fff; }
+  .enterprise .sec-desc { color: rgba(255,255,255,.6); }
+  .ai-bots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 40px; }
+  @media (max-width: 768px) { .ai-bots { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 400px) { .ai-bots { grid-template-columns: repeat(2, 1fr); } }
+  .bot-card {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+    border-radius: var(--radius-sm); padding: 26px 16px; text-align: center;
+    transition: background .25s, transform .25s;
+  }
+  .bot-card:hover { background: rgba(255,255,255,.10); transform: translateY(-2px); }
+  .bot-card .icon { font-size: 32px; margin-bottom: 10px; }
+  .bot-card h4 { font-family: var(--font-title); font-size: 14px; font-weight: 700; margin-bottom: 4px; letter-spacing: .3px; }
+  .bot-card .sub { font-size: 11px; color: rgba(255,255,255,.45); }
+  .ent-bottom { text-align: center; }
+  .ent-bottom .price { font-family: var(--font-title); font-size: 40px; font-weight: 900; margin-bottom: 6px; }
+  .ent-bottom .price span { font-size: 18px; font-weight: 400; }
+  .ent-bottom .price-note { font-size: 13px; color: rgba(255,255,255,.45); margin-bottom: 28px; line-height: 1.6; }
+  .btn-gold {
+    display: inline-block; background: transparent; color: #E8D8A0;
+    padding: 15px 36px; border-radius: 28px; font-size: 15px;
+    font-weight: 600; text-decoration: none; letter-spacing: .3px;
+    border: 1.5px solid rgba(232,216,160,.3);
+    transition: background .2s, border-color .2s, transform .2s;
+  }
+  .btn-gold:hover { background: rgba(232,216,160,.08); border-color: rgba(232,216,160,.55); transform: translateY(-2px); }
+
+  /* ── Bottom CTA ── */
+  .bottom-cta { background: var(--white-soft); text-align: center; }
+  .bottom-cta .cta-box { display: inline-flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+
+  /* ── Footer ── */
+  .footer { background: #fff; border-top: 1px solid rgba(29,32,106,.04); padding: 44px 20px; text-align: center; }
+  .footer-links { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; letter-spacing: .5px; transition: color .15s; }
+  .footer-links a:hover { color: var(--purple-mid); }
+  .footer .copy { font-size: 11px; color: #9CA3AF; }
+</style>
+</head>
+<body>
+<script>window.scrollTo(0,0);history.scrollRestoration='manual';</script>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <nav class="drawer-links">
+    <a href="#community" onclick="closeDrawer()">社群</a>
+    <a href="#courses" onclick="closeDrawer()">课程</a>
+    <a href="https://super-binbin.github.io/zhixing-cases/index.html" target="_blank" onclick="closeDrawer()">案例</a>
+    <a href="#founder" onclick="closeDrawer()">关于77</a>
+    <a href="#enterprise" onclick="closeDrawer()">企业服务</a>
+  </nav>
+</aside>
+<div class="drawer-trigger" onclick="openDrawer()" title="菜单">▶</div>
+
+<nav class="nav"><div class="nav-logo">知行新商学</div></nav>
+<button class="nav-cta" onclick="document.getElementById('community').scrollIntoView({behavior:'smooth'})">加入社群</button>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">AI 商业教育 · 知行新商学</div>
+    <h1>从流量到留量<br>用 <em>AI</em> 跑通你的商业闭环</h1>
+    <p class="hero-sub">6级分层社群 · 8门实战课程 · 从副业到企业AI化改造<br>让好人学到真知识，让好人去到好公司，让好公司发展的更好</p>
+    <div class="hero-ctas">
+      <a href="#community" class="btn-primary">个人学习 →</a>
+      <a href="#enterprise" class="btn-outline">企业AI化 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Trust Bar -->
+<section class="trust">
+  <div class="sec-inner">
+    <div class="trust-row">
+      <div class="trust-item"><div class="num">900<span style="font-size:22px;">+</span></div><div class="lbl">付费商业咨询</div></div>
+      <div class="trust-item"><div class="num">4,000<span style="font-size:22px;">+</span></div><div class="lbl">社群成员</div></div>
+      <div class="trust-item"><div class="num">8<span style="font-size:22px;"> 门</span></div><div class="lbl">AI 实战课程</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Community — Horizontal Staircase -->
+<section class="sec community" id="community">
+  <div class="sec-inner">
+    <p class="sec-label">你属于哪里</p>
+    <h2 class="sec-title">6级分层社群，找到你的起点</h2>
+    <p class="sec-desc">从19.9元入门到企业私董会。打卡爬坡享折扣，不想打卡也能直通。</p>
+
+    <p class="stair-label-main" style="text-align:center;margin-bottom:24px;">
+      <span style="font-weight:700;letter-spacing:1.5px;color:var(--purple-mid);">📋 打卡爬坡路径</span>&nbsp;&nbsp;<span style="font-size:12px;color:var(--text-tertiary);">用行动换折扣，走得越高越省 →</span>
+    </p>
+
+    <!-- Desktop: horizontal stair -->
+    <div class="stair-horizontal">
+      <div class="stair-col">
+        <div class="stair-card-h">
+          <div class="st-icon">🌱</div>
+          <div class="st-name">分群</div>
+          <div class="st-price">19.9 元</div>
+          <div class="st-desc">基础课件·9折·打卡成长</div>
+        </div>
+      </div>
+      <div class="stair-col" style="justify-content:flex-end;padding-bottom:14px;">
+        <div class="stair-connector">
+          <span class="conn-text">📝 打卡21天 + 99元</span>
+          <span class="conn-arrow">↗</span>
+        </div>
+      </div>
+      <div class="stair-col">
+        <div class="stair-card-h">
+          <div class="st-icon">🌿</div>
+          <div class="st-name">总群</div>
+          <div class="st-price">99 元</div>
+          <div class="st-desc">进阶课件·7折·工作内推</div>
+        </div>
+      </div>
+      <div class="stair-col" style="justify-content:flex-end;padding-bottom:28px;">
+        <div class="stair-connector">
+          <span class="conn-text">📝 打卡21天 + 599元</span>
+          <span class="conn-arrow">↗</span>
+        </div>
+      </div>
+      <div class="stair-col">
+        <div class="stair-card-h">
+          <div class="st-icon">🪴</div>
+          <div class="st-name">星球群</div>
+          <div class="st-price">599 元</div>
+          <div class="st-desc">全部课件·5折·免费连麦</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: vertical fallback -->
+    <div class="stair-vertical">
+      <div class="stair-v-card"><div class="st-name">🌱 分群</div><div class="st-price">19.9 元</div><div class="st-desc">基础飞书自学课件 · 直播小班课9折 · 每日打卡成长</div></div>
+      <div class="stair-v-step"><div class="vstep-text">📝 打卡 21 天 + 99 元折扣价 → 升级总群</div></div>
+      <div class="stair-v-card"><div class="st-name">🌿 总群</div><div class="st-price">99 元（打卡折扣价）</div><div class="st-desc">基础+进阶课件 · 直播小班课7折 · 简历入库 · 工作内推</div></div>
+      <div class="stair-v-step"><div class="vstep-text">📝 打卡 21 天 + 599 元折扣价 → 升级星球群</div></div>
+      <div class="stair-v-card"><div class="st-name">🪴 星球群</div><div class="st-price">599 元（打卡折扣价）</div><div class="st-desc">全部自学课件 · 直播小班课5折 · 0元试课 · 每月免费连麦直播</div></div>
+    </div>
+
+    <!-- Express Lane -->
+    <div class="express-lane">
+      <p class="ex-label">⚡ 直通快车道 — 不想打卡？直接付费升级</p>
+      <div class="express-row">
+        <div class="express-item"><div class="ex-from">🌱 分群</div><div class="ex-price">19.9<span> 元</span></div></div>
+        <div class="express-arrow">→</div>
+        <div class="express-item"><div class="ex-from">直通总群</div><div class="ex-price">199<span> 元</span></div></div>
+        <div class="express-arrow">→</div>
+        <div class="express-item"><div class="ex-from">直通星球群</div><div class="ex-price">777<span> 元</span></div></div>
+      </div>
+      <p style="margin-top:12px;font-size:11px;color:var(--text-tertiary);text-align:center;">无需打卡，即付即进。省下21天时间。</p>
+    </div>
+
+    <!-- Higher Tiers -->
+    <p style="text-align:center;margin:40px 0 20px;font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--purple-mid);">🏛️ <span style="color:var(--purple-bright);">高阶通道</span> — 从优质成员中筛选孵化</p>
+    <div class="high-tiers">
+      <div class="ht-card">
+        <div class="ht-icon">🌳</div><div class="ht-name">预备共创群</div><div class="ht-price">押金 2,000 元</div><div class="ht-tag">孵化培养</div>
+        <ul class="ht-perks"><li>星球群全部权益</li><li>直播小班课全免费</li><li>升级共创群机会</li><li>1年后押金返还</li></ul>
+        <div class="ht-who">打卡优质 · 每月限5名</div>
+      </div>
+      <div class="ht-card">
+        <div class="ht-icon">🏛️</div><div class="ht-name">共创群</div><div class="ht-price">邀请制</div><div class="ht-tag">核心共创</div>
+        <ul class="ht-perks"><li>预备共创群全部权益</li><li>分群管理员权限</li><li>CPS分润权益</li><li>课程开发权限</li></ul>
+        <div class="ht-who">预备共创群优质成员</div>
+      </div>
+      <div class="ht-card">
+        <div class="ht-icon">👑</div><div class="ht-name" style="color:#fff;">私董会</div><div class="ht-price">9,186 元</div><div class="ht-tag">企业专属</div>
+        <ul class="ht-perks"><li>AI高端人脉主群</li><li>企业AI化线下1V1诊断</li><li>老板+团队AI课程</li><li>赠送6个AI员工</li></ul>
+        <div class="ht-who">企业老板 / AI改造管理者</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Courses -->
+<section class="sec courses" id="courses">
+  <div class="sec-inner">
+    <p class="sec-label">学什么</p>
+    <h2 class="sec-title">8门实战课，从启蒙到操盘</h2>
+    <p class="sec-desc">全部围绕「流量→留量」用AI提效。每门课经3-6个月打磨，确保学员能变现、能赚到钱。</p>
+    <div class="path-flow">
+      <div class="path-stage"><div class="st-icon">💡</div><div class="st-name">启 蒙</div><div class="st-desc">建立AI认知<br>激发学习兴趣</div></div>
+      <div class="path-arrow">→</div>
+      <div class="path-stage"><div class="st-icon">🔧</div><div class="st-name">实 战</div><div class="st-desc">掌握变现技能<br>跑通商业闭环</div></div>
+      <div class="path-arrow">→</div>
+      <div class="path-stage"><div class="st-icon">🚀</div><div class="st-name">操 盘</div><div class="st-desc">AI驱动的IP打造<br>私域运营与转化</div></div>
+    </div>
+    <div class="course-grid">
+      <div class="course-card"><span class="c-badge live">已上线</span><h4>AI 兴趣激发课</h4><p>激发AI学习兴趣，建立认知，零基础入门首选</p></div>
+      <div class="course-card"><span class="c-badge live">已上线</span><h4>剪辑课</h4><p>短视频剪辑技能实战，从拍摄到成片全流程</p></div>
+      <div class="course-card"><span class="c-badge live">已上线</span><h4>小红书电商变现课</h4><p>小红书平台电商变现全流程，从种草到成交</p></div>
+      <div class="course-card"><span class="c-badge live">已上线</span><h4>大厂人 · 一人公司课</h4><p>面向大厂人的AI小红书职场IP全流程</p></div>
+      <div class="course-card"><span class="c-badge live">已上线</span><h4>AI 操盘手高阶课</h4><p>高阶AI操盘实战训练，商业闭环深度实践</p></div>
+      <div class="course-card"><span class="c-badge beta">内测中</span><h4>AI 短剧课</h4><p>AI赋能短剧创作与运营，新赛道提前布局</p></div>
+      <div class="course-card"><span class="c-badge beta">内测中</span><h4>懂AI的IP操盘手课</h4><p>AI驱动的个人IP打造与操盘全流程</p></div>
+      <div class="course-card"><span class="c-badge dev">研发中</span><h4>懂AI的私域操盘手课</h4><p>AI赋能私域流量运营与转化，即将推出</p></div>
+    </div>
+    <div class="cases-entry">
+      <a href="https://super-binbin.github.io/zhixing-cases/index.html" target="_blank">学员案例 ›››</a>
+    </div>
+  </div>
+</section>
+
+<!-- Founder -->
+<section class="sec founder" id="founder">
+  <div class="sec-inner">
+    <p class="sec-label">谁在带你</p><h2 class="sec-title">77 的故事</h2>
+    <p class="sec-desc">从一份免费飞书文档，到4000+人的6级社群。不是一夜爆红，是一步一步走过来的。</p>
+    <div class="founder-block">
+      <div class="founder-av">77</div>
+      <div class="founder-story">
+        <div class="quote">"专业人士追求的不是流星般的高光，而是不管刮风下雨都能有一点收成。"</div>
+        <p>77最初只是把自己实践总结的内容整理成飞书文档，<strong>完全免费</strong>分享给身边的人。通过线上社群教大家做副业，第一批用户来自口碑传播。</p>
+        <p>随着越来越多的人找上门，77开始收费咨询——<strong>900+次</strong>付费商业咨询后，她洞察到真正的需求：「AI」「内容」「出海」是未来的大趋势。于是有了今天的6级社群体系和8门课程。</p>
+        <div class="timeline-row">
+          <div class="tl-dot"><div class="yr">2023</div><div class="ev">免费飞书文档<br>开源分享</div></div>
+          <div class="tl-dot"><div class="yr">2024</div><div class="ev">付费社群起步<br>900+咨询积累</div></div>
+          <div class="tl-dot"><div class="yr">2025</div><div class="ev">6级社群+课程<br>从流量到留量</div></div>
+          <div class="tl-dot"><div class="yr">未来</div><div class="ev">人才梯队+企业AI化<br>让好公司更好</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Enterprise -->
+<section class="sec enterprise" id="enterprise">
+  <div class="sec-inner">
+    <p class="sec-label">企业服务</p><h2 class="sec-title">知行私董会</h2>
+    <p class="sec-desc">为企业老板和计划进入传统行业AI改造的大厂管理者，提供从认知到落地的全链路服务。</p>
+    <div class="ai-bots">
+      <div class="bot-card"><div class="icon">💬</div><h4>AI 智能客服</h4><div class="sub">7×24 自动应答</div></div>
+      <div class="bot-card"><div class="icon">📈</div><h4>AI 销售助理</h4><div class="sub">智能线索跟进与转化</div></div>
+      <div class="bot-card"><div class="icon">✍️</div><h4>AI 内容运营</h4><div class="sub">自动产出品牌内容</div></div>
+      <div class="bot-card"><div class="icon">🎨</div><h4>AI 设计助理</h4><div class="sub">智能生成视觉素材</div></div>
+      <div class="bot-card"><div class="icon">👥</div><h4>AI 智能HR</h4><div class="sub">简历筛选与人才匹配</div></div>
+      <div class="bot-card"><div class="icon">📋</div><h4>AI SOP助手</h4><div class="sub">流程自动化与规范</div></div>
+    </div>
+    <div class="ent-bottom">
+      <div class="price">9,186<span> 元</span></div>
+      <p class="price-note">早鸟价 · 社群满100人时涨价至15,986元<br>权益：高端AI人脉主群 + 线下1V1企业诊断 + 老板AI决策力课 + 团队AI实战课 + 6个AI员工</p>
+      <a href="#" class="btn-gold">预约线下1V1诊断 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="sec bottom-cta">
+  <div class="sec-inner">
+    <h2 class="sec-title" style="text-align:center;margin-bottom:20px;">准备好了吗？</h2>
+    <p class="sec-desc" style="margin-left:auto;margin-right:auto;">无论你是想给职业生涯加一道保险，还是为企业做AI化改造，这里都有你的入口。</p>
+    <div class="cta-box">
+      <a href="#community" class="btn-primary">个人学习，从19.9元开始 →</a>
+      <a href="#enterprise" class="btn-outline">了解企业AI化 →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="#community">社群体系</a><a href="#courses">课程体系</a><a href="https://super-binbin.github.io/zhixing-cases/index.html" target="_blank">学员案例</a><a href="#founder">关于77</a><a href="#enterprise">企业服务</a>
+  </div>
+  <p class="copy">知行新商学 © 2025 · AI 商业教育 · 从流量到留量</p>
+</footer>
+
+<script>
+  function openDrawer() { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
+  function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
+  window.addEventListener('pageshow', function() { if (!window.location.hash) { window.scrollTo(0, 0); } });
+</script>
+</body>
+</html>
