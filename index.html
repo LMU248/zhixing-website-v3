@@ -27,7 +27,6 @@
     --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
   body {
     font-family: var(--font-body); background: var(--white);
     color: var(--text-body); line-height: 1.7;
@@ -490,7 +489,7 @@
 <div class="drawer-trigger" onclick="openDrawer()" title="菜单">▶</div>
 
 <nav class="nav"><div class="nav-logo">知行新商学</div></nav>
-<button class="nav-cta" onclick="document.getElementById('community').scrollIntoView({behavior:'smooth'})">加入社群</button>
+<button class="nav-cta" onclick="smoothTo('community')">加入社群</button>
 
 <!-- Hero -->
 <section class="hero">
@@ -689,8 +688,8 @@
     <h2 class="sec-title" style="text-align:center;margin-bottom:20px;">准备好了吗？</h2>
     <p class="sec-desc" style="margin-left:auto;margin-right:auto;">无论你是想给职业生涯加一道保险，还是为企业做AI化改造，这里都有你的入口。</p>
     <div class="cta-box">
-      <a href="#community" class="btn-primary">个人学习，从19.9元开始 →</a>
-      <a href="#enterprise" class="btn-outline">了解企业AI化 →</a>
+      <a href="#community" class="btn-primary">找到你的起点，从19.9元开始 →</a>
+      <a href="#enterprise" class="btn-outline">立即诊断企业AI化潜力 →</a>
     </div>
   </div>
 </section>
@@ -703,9 +702,21 @@
 </footer>
 
 <script>
+  // scroll to top — aggressive fix for mobile browsers
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  requestAnimationFrame(function() { window.scrollTo(0, 0); });
+  setTimeout(function() { window.scrollTo(0, 0); }, 100);
+  window.addEventListener('pageshow', function() { window.scrollTo(0, 0); });
+  window.addEventListener('load', function() { window.scrollTo(0, 0); });
+
+  // smooth scroll helper
+  function smoothTo(id) {
+    var el = document.getElementById(id);
+    if (el) { el.scrollIntoView({ behavior: 'smooth' }); }
+  }
   function openDrawer() { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
   function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
-  window.addEventListener('pageshow', function() { if (!window.location.hash) { window.scrollTo(0, 0); } });
 </script>
 </body>
 </html>
