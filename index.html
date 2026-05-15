@@ -493,21 +493,22 @@
   .sheet h3 { font-size: 18px; font-weight: 700; color: var(--purple-deep); margin-bottom: 6px; letter-spacing: 0; }
   .sheet .sheet-sub { font-size: 13px; color: var(--text-tertiary); margin-bottom: 24px; }
   .sheet .wx-box {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    background: #F9F9FB; border-radius: 14px; padding: 14px 18px;
-    margin-bottom: 20px; flex-wrap: wrap;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: #F9F9FB; border-radius: 12px; padding: 10px 14px;
+    margin-bottom: 12px; flex-wrap: wrap;
   }
   .sheet .wx-id {
-    font-size: 22px; font-weight: 700; color: var(--text-body);
-    letter-spacing: .5px; font-family: var(--font-title);
+    font-size: 16px; font-weight: 600; color: var(--text-secondary);
+    letter-spacing: .3px;
   }
   .sheet .btn-copy {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: var(--purple-deep); color: #fff; border: none;
-    padding: 8px 16px; border-radius: 20px; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #fff; color: var(--purple-mid); border: .5px solid rgba(29,32,106,.12);
+    padding: 5px 12px; border-radius: 16px; font-size: 12px;
     font-weight: 600; cursor: pointer; letter-spacing: 0;
-    transition: opacity .15s; white-space: nowrap;
+    transition: all .15s; white-space: nowrap;
   }
+  .sheet .btn-copy:hover { background: var(--purple-lightest); }
   .sheet .btn-copy:hover { opacity: .85; }
   .sheet .btn-copy.copied { background: #059669; }
   .sheet .divider {
@@ -518,13 +519,16 @@
     content: ''; flex: 1; height: .5px; background: var(--sep);
   }
   .sheet .qr-img {
-    width: 140px; height: 140px; margin: 0 auto 10px;
-    border-radius: 12px; border: .5px solid var(--sep);
+    width: 180px; height: 180px; margin: 0 auto 8px;
+    border-radius: 14px; border: .5px solid var(--sep);
     object-fit: contain; display: block;
   }
+  .sheet .qr-hint {
+    font-size: 12px; color: var(--text-tertiary); margin-bottom: 16px;
+  }
   .sheet .qr-placeholder {
-    width: 140px; height: 140px; margin: 0 auto 10px;
-    background: #F9F9FB; border-radius: 12px; border: 1px dashed #E5E5EA;
+    width: 180px; height: 180px; margin: 0 auto 10px;
+    background: #F9F9FB; border-radius: 14px; border: 1px dashed #E5E5EA;
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; color: var(--text-tertiary);
   }
@@ -750,7 +754,7 @@
     <p class="sec-desc" style="margin-left:auto;margin-right:auto;">无论你是想给职业生涯加一道保险，还是为企业做AI化改造，这里都有你的入口。</p>
     <div class="cta-box">
       <a href="#community" class="btn-primary">找到你的起点，从19.9元开始 →</a>
-      <a href="#" class="btn-outline" onclick="openSheet('community');return false;">立即诊断企业AI化潜力 →</a>
+      <a href="#enterprise" class="btn-outline">立即诊断企业AI化潜力 →</a>
     </div>
   </div>
 </section>
@@ -768,13 +772,14 @@
   <div class="sheet-handle"></div>
   <h3 id="sheetTitle">添加77助理微信</h3>
   <p class="sheet-sub" id="sheetSub">备注"私董会"优先通过</p>
-  <div class="wx-box">
-    <span class="wx-id">zxgc5725</span>
-    <button class="btn-copy" id="btnCopy" onclick="copyWx()">📋 一键复制</button>
-  </div>
-  <div class="divider">或扫码添加</div>
   <img class="qr-img" src="qr-code.jpg" alt="微信二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
   <div class="qr-placeholder" style="display:none;">微信二维码</div>
+  <p class="qr-hint">📷 截图或长按识别二维码</p>
+  <div class="divider">或手动添加</div>
+  <div class="wx-box">
+    <span class="wx-id">zxgc5725</span>
+    <button class="btn-copy" id="btnCopy" onclick="copyWx()">📋 复制</button>
+  </div>
   <button class="btn-close" onclick="closeSheet()">关闭</button>
 </div>
 
@@ -806,8 +811,10 @@
     }
     document.getElementById('contactSheet').classList.add('open');
     document.getElementById('sheetOverlay').classList.add('open');
-    document.getElementById('btnCopy').textContent = '📋 一键复制';
-    document.getElementById('btnCopy').classList.remove('copied');
+    var b = document.getElementById('btnCopy');
+    b.textContent = '📋 复制';
+    b.classList.remove('copied');
+    b.style.background = '#fff'; b.style.color = 'var(--purple-mid)'; b.style.borderColor = 'rgba(29,32,106,.12)';
   }
   function closeSheet() {
     document.getElementById('contactSheet').classList.remove('open');
@@ -816,8 +823,9 @@
   function copyWx() {
     navigator.clipboard.writeText('zxgc5725').then(function() {
       var btn = document.getElementById('btnCopy');
-      btn.textContent = '✓ 已复制，打开微信';
+      btn.textContent = '✓ 已复制';
       btn.classList.add('copied');
+      btn.style.background = '#ECFDF5'; btn.style.color = '#059669'; btn.style.borderColor = 'rgba(5,150,105,.2)';
     });
   }
 </script>
