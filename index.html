@@ -470,6 +470,69 @@
   .footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; letter-spacing: .5px; transition: color .15s; }
   .footer-links a:hover { color: var(--purple-mid); }
   .footer .copy { font-size: 11px; color: #9CA3AF; }
+
+  /* ── Contact Sheet ── */
+  .sheet-overlay {
+    position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,.35);
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  }
+  .sheet-overlay.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 700;
+    background: #fff; border-radius: 24px 24px 0 0;
+    padding: 32px 24px 40px; text-align: center;
+    transform: translateY(100%); transition: transform .35s cubic-bezier(.32,.72,0,1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: #E5E5EA; margin: 0 auto 24px;
+  }
+  .sheet h3 { font-size: 18px; font-weight: 700; color: var(--purple-deep); margin-bottom: 6px; letter-spacing: 0; }
+  .sheet .sheet-sub { font-size: 13px; color: var(--text-tertiary); margin-bottom: 24px; }
+  .sheet .wx-box {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #F9F9FB; border-radius: 14px; padding: 14px 18px;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .sheet .wx-id {
+    font-size: 22px; font-weight: 700; color: var(--text-body);
+    letter-spacing: .5px; font-family: var(--font-title);
+  }
+  .sheet .btn-copy {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--purple-deep); color: #fff; border: none;
+    padding: 8px 16px; border-radius: 20px; font-size: 13px;
+    font-weight: 600; cursor: pointer; letter-spacing: 0;
+    transition: opacity .15s; white-space: nowrap;
+  }
+  .sheet .btn-copy:hover { opacity: .85; }
+  .sheet .btn-copy.copied { background: #059669; }
+  .sheet .divider {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--text-tertiary); font-size: 12px; margin: 20px 0;
+  }
+  .sheet .divider::before, .sheet .divider::after {
+    content: ''; flex: 1; height: .5px; background: var(--sep);
+  }
+  .sheet .qr-img {
+    width: 140px; height: 140px; margin: 0 auto 10px;
+    border-radius: 12px; border: .5px solid var(--sep);
+    object-fit: contain; display: block;
+  }
+  .sheet .qr-placeholder {
+    width: 140px; height: 140px; margin: 0 auto 10px;
+    background: #F9F9FB; border-radius: 12px; border: 1px dashed #E5E5EA;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--text-tertiary);
+  }
+  .sheet .btn-close {
+    margin-top: 20px; background: none; border: none;
+    font-size: 14px; color: var(--text-tertiary); cursor: pointer;
+    padding: 8px 24px;
+  }
 </style>
 </head>
 <body>
@@ -675,7 +738,7 @@
     <div class="ent-bottom">
       <div class="price">9,186<span> 元</span></div>
       <p class="price-note">早鸟价 · 社群满100人时涨价至15,986元<br>权益：高端AI人脉主群 + 线下1V1企业诊断 + 老板AI决策力课 + 团队AI实战课 + 6个AI员工</p>
-      <a href="#" class="btn-gold">预约线下1V1诊断 →</a>
+      <a href="#" class="btn-gold" onclick="openSheet('enterprise');return false;">预约线下1V1诊断 →</a>
     </div>
   </div>
 </section>
@@ -687,7 +750,7 @@
     <p class="sec-desc" style="margin-left:auto;margin-right:auto;">无论你是想给职业生涯加一道保险，还是为企业做AI化改造，这里都有你的入口。</p>
     <div class="cta-box">
       <a href="#community" class="btn-primary">找到你的起点，从19.9元开始 →</a>
-      <a href="#enterprise" class="btn-outline">立即诊断企业AI化潜力 →</a>
+      <a href="#" class="btn-outline" onclick="openSheet('community');return false;">立即诊断企业AI化潜力 →</a>
     </div>
   </div>
 </section>
@@ -698,6 +761,22 @@
   </div>
   <p class="copy">知行新商学 © 2025 · AI 商业教育 · 从流量到留量</p>
 </footer>
+
+<!-- Contact Sheet -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
+<div class="sheet" id="contactSheet">
+  <div class="sheet-handle"></div>
+  <h3 id="sheetTitle">添加77助理微信</h3>
+  <p class="sheet-sub" id="sheetSub">备注"私董会"优先通过</p>
+  <div class="wx-box">
+    <span class="wx-id">zxgc5725</span>
+    <button class="btn-copy" id="btnCopy" onclick="copyWx()">📋 一键复制</button>
+  </div>
+  <div class="divider">或扫码添加</div>
+  <img class="qr-img" src="qr-code.jpg" alt="微信二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+  <div class="qr-placeholder" style="display:none;">微信二维码</div>
+  <button class="btn-close" onclick="closeSheet()">关闭</button>
+</div>
 
 <script>
   // scroll to top — aggressive fix for mobile browsers
@@ -715,6 +794,32 @@
   }
   function openDrawer() { document.getElementById('drawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
   function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
+
+  // contact sheet
+  function openSheet(type) {
+    if (type === 'enterprise') {
+      document.getElementById('sheetTitle').textContent = '添加77助理微信';
+      document.getElementById('sheetSub').textContent = '备注"私董会"优先通过';
+    } else {
+      document.getElementById('sheetTitle').textContent = '添加77助理微信';
+      document.getElementById('sheetSub').textContent = '备注"社群"优先通过';
+    }
+    document.getElementById('contactSheet').classList.add('open');
+    document.getElementById('sheetOverlay').classList.add('open');
+    document.getElementById('btnCopy').textContent = '📋 一键复制';
+    document.getElementById('btnCopy').classList.remove('copied');
+  }
+  function closeSheet() {
+    document.getElementById('contactSheet').classList.remove('open');
+    document.getElementById('sheetOverlay').classList.remove('open');
+  }
+  function copyWx() {
+    navigator.clipboard.writeText('zxgc5725').then(function() {
+      var btn = document.getElementById('btnCopy');
+      btn.textContent = '✓ 已复制，打开微信';
+      btn.classList.add('copied');
+    });
+  }
 </script>
 </body>
 </html>
